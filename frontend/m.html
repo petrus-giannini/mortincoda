@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestione coda</title>
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <div id="caricamento" class="tenue">Apertura della coda…</div>
+
+  <div id="pannello" class="nascosto">
+    <span class="insegna no-stampa" id="insegna"></span>
+
+    <div class="no-stampa">
+      <span class="etichetta">In servizio</span>
+      <span class="numerone" id="corrente">—</span>
+
+      <div class="riga-dati">
+        <span class="dato"><b id="attesa">0</b><span class="tenue">in attesa</span></span>
+        <span class="dato"><b id="emessi">0</b><span class="tenue">numeri staccati</span></span>
+        <span class="dato"><b id="media">—</b><span class="tenue">per persona</span></span>
+      </div>
+
+      <button class="principale" id="prossimo">Chiama il prossimo</button>
+      <div class="fila">
+        <button class="secondario" id="richiama">Richiama</button>
+        <button class="secondario" id="indietro">Torna indietro</button>
+        <button class="secondario" id="chiudi">Chiudi le prenotazioni</button>
+      </div>
+      <p class="errore nascosto" id="errore"></p>
+
+      <div class="stato" style="margin-top:1.1rem">
+        <span class="spia"></span><span id="rete">Collegato</span>
+      </div>
+    </div>
+
+    <h2 class="no-stampa">Da mostrare a chi arriva</h2>
+    <div id="qr"></div>
+    <p class="tenue" id="didascalia"></p>
+
+    <div class="fila no-stampa">
+      <button class="secondario" id="copia">Copia il link</button>
+      <button class="secondario" id="stampa">Stampa il QR</button>
+    </div>
+
+    <div class="riquadro avvertenza no-stampa">
+      <p style="margin:0"><b>Conserva questo link.</b> È l'unico modo per tornare
+      a gestire la coda da un altro dispositivo, e non è recuperabile.</p>
+      <code class="codice" id="linkMaster"></code>
+      <button class="secondario" id="copiaMaster">Copia il link riservato</button>
+    </div>
+
+    <footer class="no-stampa">
+      La coda si cancella da sola 24 ore dopo l'ultima attività.
+    </footer>
+  </div>
+
+  <div id="assente" class="nascosto">
+    <h1>Coda non trovata</h1>
+    <p class="tenue">Il codice non esiste oppure la coda è scaduta. Le code
+    durano 24 ore dall'ultima attività.</p>
+    <p><a href="index.html">Aprine una nuova</a></p>
+  </div>
+</main>
+<script src="vendor/qrcode.js"></script>
+<script type="module" src="m.js"></script>
+</body>
+</html>

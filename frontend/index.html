@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eliminacode</title>
+<meta name="description" content="Apri una coda, mostra il QR code, chiama i numeri. Senza registrazione.">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <h1>Apri una coda</h1>
+  <p class="tenue">Chi aspetta inquadra un QR code, stacca il numero e viene
+  avvisato quando è il suo turno. Nessuna registrazione, né per te né per loro.</p>
+
+  <div class="riquadro">
+    <label for="nome">Nome della coda</label>
+    <input type="text" id="nome" maxlength="40" autocomplete="off"
+           placeholder="Studio Rossi — sportello 2" enterkeyhint="go">
+    <p class="tenue" style="margin:.5rem 0 0">Lo vedono le persone in attesa. Serve
+    a farle sentire nel posto giusto.</p>
+    <div class="fila">
+      <button class="principale" id="crea">Apri la coda</button>
+    </div>
+    <p class="errore nascosto" id="errore"></p>
+  </div>
+
+  <h2>Come funziona</h2>
+  <p class="tenue">La coda vive 24 ore dall'ultima attività, poi sparisce da sola.
+  Non viene salvato nessun dato delle persone in attesa: solo un numero
+  progressivo. Chi apre la coda riceve un link riservato da conservare —
+  è l'unico modo per tornare a gestirla.</p>
+
+  <footer>
+    Hai già una coda aperta su questo dispositivo?
+    <a href="#" id="ultima" class="nascosto">Riprendi la gestione</a>
+    <span id="nessuna">Il link riservato è nella cronologia del browser.</span>
+  </footer>
+</main>
+<script type="module" src="index.js"></script>
+</body>
+</html>

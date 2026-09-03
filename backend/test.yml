@@ -1,0 +1,37 @@
+# Esegue la suite del backend a ogni push. Serve soprattutto se non hai
+# Deno sulla macchina: apri la scheda Actions su GitHub e leggi lì il
+# risultato, senza installare niente.
+#
+# Puoi anche lanciarlo a mano da Actions → Test backend → Run workflow.
+
+name: Test backend
+
+on:
+  push:
+    paths: ["backend/**", ".github/workflows/test.yml"]
+  pull_request:
+    paths: ["backend/**"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Formattazione e lint
+        run: deno fmt --check && deno lint
+
+      - name: Controllo dei tipi
+        run: deno check main.ts test.ts
+
+      - name: Test
+        run: deno task test

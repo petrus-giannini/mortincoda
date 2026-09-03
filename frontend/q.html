@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In coda</title>
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <div id="caricamento" class="tenue">Un momento…</div>
+
+  <!-- 1. non ha ancora staccato il numero -->
+  <div id="ingresso" class="nascosto">
+    <span class="insegna" id="insegna1"></span>
+    <h1>Mettiti in coda</h1>
+    <p class="tenue" id="situazione"></p>
+    <button class="principale" id="stacca">Stacca il numero</button>
+    <p class="errore nascosto" id="erroreIngresso"></p>
+  </div>
+
+  <!-- 2. è in coda -->
+  <div id="attesa" class="nascosto">
+    <span class="insegna" id="insegna2"></span>
+
+    <span class="etichetta" id="etichettaNumero">Il tuo numero</span>
+    <span class="numerone" id="mio">—</span>
+    <p id="messaggio" style="font-size:1.1rem;margin-top:.6rem"></p>
+
+    <div class="riga-dati">
+      <span class="dato"><b id="servito">—</b><span class="tenue">chiamato ora</span></span>
+      <span class="dato"><b id="davanti">—</b><span class="tenue">prima di te</span></span>
+      <span class="dato"><b id="stima">—</b><span class="tenue">di attesa</span></span>
+    </div>
+
+    <button class="principale" id="attiva">Attiva suono e vibrazione</button>
+
+    <div class="riquadro avvertenza" id="promemoria">
+      <p style="margin:0"><b>Tieni aperta questa pagina.</b> Se la chiudi non
+      ricevi l'avviso del tuo turno.</p>
+      <p class="tenue" style="margin:.45rem 0 0">Il numero resta valido, ma
+      dovrai controllare da solo a che punto è la coda.</p>
+    </div>
+
+    <div class="stato" style="margin-top:1.2rem">
+      <span class="spia"></span><span id="rete">Collegato</span>
+    </div>
+
+    <footer>
+      <button class="secondario" id="abbandona">Lascia la coda</button>
+    </footer>
+  </div>
+
+  <!-- 3. coda inesistente o scaduta -->
+  <div id="assente" class="nascosto">
+    <h1>Coda non trovata</h1>
+    <p class="tenue">Il codice non esiste oppure la coda è già stata chiusa.
+    Chiedi a chi gestisce lo sportello di mostrarti di nuovo il QR code.</p>
+  </div>
+</main>
+<script type="module" src="q.js"></script>
+</body>
+</html>

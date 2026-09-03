@@ -1,0 +1,26 @@
+{
+  "tasks": {
+    "dev": "deno run --watch --unstable-kv --allow-net --allow-env --allow-read --allow-write main.ts",
+    "test": "KV_PATH=:memory: deno test --unstable-kv --allow-net --allow-env --allow-read --allow-write",
+    "check": "deno check main.ts test.ts && deno lint && deno fmt --check"
+  },
+
+  "// deploy": [
+    "Configurazione letta da Deno Deploy al build.",
+    "La 'App directory' NON si mette qui: va impostata a 'backend' dalla",
+    "dashboard, perché è ciò che dice a Deploy dove trovare questo file.",
+    "Niente flag --unstable-*: sul runtime di Deploy non sono passabili,",
+    "servono solo in locale nei task qui sopra."
+  ],
+  "deploy": {
+    "runtime": {
+      "type": "dynamic",
+      "entrypoint": "./main.ts"
+    }
+  },
+
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.0"
+  },
+  "fmt": { "lineWidth": 92 }
+}
