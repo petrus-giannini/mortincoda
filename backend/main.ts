@@ -12,16 +12,14 @@ import {
 // ---------------------------------------------------------------- config
 
 // Origini ammesse, separate da virgola. Es:
-//   ORIGINI=https://petrus-giannini.github.io
+// ORIGINI=https://petrus-giannini.github.io
 // Se non impostata si accetta qualunque origine: comodo in locale,
 // da impostare sempre in produzione.
 const ORIGINI = (Deno.env.get("ORIGINI") ?? "")
   .split(",").map((s) => s.trim()).filter(Boolean);
 
 const MAX_NOME = 40;
-// In una finestra di 10 minuti. Alzalo per i test di carico locali:
-//   TICKET_PER_IP=1000 deno task dev
-const TICKET_PER_IP = Number(Deno.env.get("TICKET_PER_IP")) || 6;
+const TICKET_PER_IP = 6; // in una finestra di 10 minuti, best effort
 const FINESTRA_MS = 10 * 60 * 1000;
 const PAUSA_MAX_MS = 15 * 60 * 1000; // oltre questo il campione è una pausa
 const RIMBALZO_MS = 3000; // sotto questo è un doppio click
@@ -61,10 +59,8 @@ function confrontoCostante(a: string, b: string): boolean {
 
 const contatori = new Map<string, { n: number; reset: number }>();
 
-/** Limite per IP sulle sole prenotazioni. Vive in memoria dell'isolate e si
- *  fida di x-forwarded-for, che un client può falsificare: è una barriera
- *  contro la distrazione, non contro un attacco. Senza autenticazione non
- *  esiste niente di meglio, e la posta in gioco è qualche numero sprecato. */
+/** Limite per IP sulle sole prenotazioni. Vive in memoria dell'isolate,
+ *  quindi è una barriera contro la distrazione, non contro un attacco. */
 function limiteSuperato(ip: string): boolean {
   const ora = Date.now();
   const c = contatori.get(ip);

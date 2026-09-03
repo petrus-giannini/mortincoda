@@ -1,7 +1,7 @@
 // Modulo condiviso dalle tre pagine.
 // L'unica riga da cambiare al deploy è questa:
-// const API = "https://eliminacode.deno.dev";
-const API = "http://localhost:8000";
+const API = "https://mortincoda.petrus-giannini.deno.net";
+// const API = "http://localhost:8000";
 
 // --- client HTTP -------------------------------------------------------
 // I POST partono come text/plain di proposito: così restano richieste
