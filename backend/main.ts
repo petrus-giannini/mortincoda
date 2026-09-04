@@ -19,7 +19,7 @@ const ORIGINI = (Deno.env.get("ORIGINI") ?? "")
   .split(",").map((s) => s.trim()).filter(Boolean);
 
 const MAX_NOME = 40;
-const TICKET_PER_IP = 6; // in una finestra di 10 minuti, best effort
+const TICKET_PER_IP = 10; // in una finestra di 10 minuti, best effort
 const FINESTRA_MS = 10 * 60 * 1000;
 const PAUSA_MAX_MS = 15 * 60 * 1000; // oltre questo il campione è una pausa
 const RIMBALZO_MS = 3000; // sotto questo è un doppio click
