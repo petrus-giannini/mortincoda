@@ -1,19 +1,25 @@
-/* Il riferimento visivo è il biglietto di carta termica e il display a muro:
-   carta fredda, inchiostro quasi nero, e un solo rosso da tabellone che
-   compare unicamente quando tocca a te. Niente font esterni: la pagina non
-   fa nessuna richiesta di rete oltre a quelle verso l'API. */
+/* Il riferimento visivo è il biglietto di carta termica strappato dal rotolo
+   e il display a muro: carta fredda, inchiostro quasi nero, e un solo rosso
+   da tabellone che compare unicamente quando tocca a te.
+   Niente font esterni: la pagina non fa nessuna richiesta di rete oltre a
+   quelle verso l'API.
+
+   Tutto è disegnato prima per un telefono tenuto in mano in una sala
+   d'attesa, e solo dopo allargato per uno schermo grande. I corpi partono
+   grandi perché queste pagine si guardano di sfuggita, spesso da lontano. */
 
 :root {
-  --carta: #eeede7;
-  --carta-alta: #f7f6f2;
+  --carta: #e4e2d8;
+  --carta-alta: #edebe4;
   --inchiostro: #16171a;
-  --tenue: #6b6d72;
-  --linea: #d5d3cb;
+  --tenue: #63656a;
+  --linea: #c9c7bd;
   --segnale: #c8102e;
   --pronto: #14603f;
-  --ambra: #9a6207;
+  --ambra: #8a5806;
 
-  --sp: 1.5rem;
+
+  --sp: 1.25rem;
   --raggio: 3px;
   --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
@@ -24,17 +30,20 @@
     --carta: #131416;
     --carta-alta: #1c1e21;
     --inchiostro: #ecebe5;
-    --tenue: #94969b;
+    --tenue: #9b9da2;
     --linea: #33363a;
     --segnale: #ff5262;
     --pronto: #4fbc8a;
     --ambra: #e0a02f;
-  }
+    }
 }
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 body {
   margin: 0;
@@ -42,75 +51,217 @@ body {
   padding: var(--sp);
   background: var(--carta);
   color: var(--inchiostro);
-  font: 400 16px/1.55 var(--sans);
+  font: 400 17px/1.5 var(--sans);
   font-variant-numeric: tabular-nums;
   transition: background-color .25s, color .25s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-main { max-width: 34rem; margin: 0 auto; }
+main { max-width: 32rem; margin: 0 auto; }
 
 /* --- tipografia ------------------------------------------------------- */
 
 h1 {
-  margin: 0 0 .15em;
-  font-size: 1.35rem;
+  margin: 0 0 .2em;
+  font-size: 1.6rem;
   font-weight: 600;
-  letter-spacing: -.015em;
+  letter-spacing: -.02em;
+  line-height: 1.15;
 }
 
 h2 {
-  margin: 2.2rem 0 .6rem;
-  font-size: .95rem;
+  margin: 2rem 0 .6rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--tenue);
 }
 
-p { margin: 0 0 .8rem; max-width: 46ch; }
+p { margin: 0 0 .85rem; max-width: 42ch; }
 
-.tenue { color: var(--tenue); font-size: .875rem; line-height: 1.5; }
+.tenue { color: var(--tenue); font-size: 1rem; line-height: 1.5; }
+.minuta { font-size: .9rem; }
 
 .insegna {
   display: block;
-  margin-bottom: 1.6rem;
-  padding-bottom: .7rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: .6rem;
   border-bottom: 1px solid var(--linea);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: -.01em;
+}
+
+.etichetta {
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--tenue);
 }
 
 /* Il numero è l'oggetto: tutto il resto gli sta intorno. */
 .numerone {
   display: block;
-  margin: -.05em 0 0 -.045em;
-  font-size: clamp(5.5rem, 33vw, 11.5rem);
+  font-size: clamp(6rem, 40vw, 13rem);
   font-weight: 650;
-  line-height: .88;
+  line-height: .86;
   letter-spacing: -.055em;
 }
 
-.etichetta {
-  font-size: .9rem;
-  color: var(--tenue);
+.messaggio {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  margin: .9rem 0 0;
+  max-width: 26ch;
 }
 
-.riga-dati {
+/* --- il biglietto ----------------------------------------------------- */
+/* La sagoma sta in quattro SVG (img/biglietto-*.svg), ricavati misurando il
+   biglietto di riferimento: intaglio in alto e punta in basso sono la stessa
+   V, una specchiata sull'altra, come le lascia la lama di un rotolo.
+   Qui l'immagine fa solo da sfondo: nome della coda e numero restano testo,
+   così cambiano a ogni turno e li legge uno screen reader.
+
+   Lo stesso componente serve due volte, sul biglietto di chi aspetta e sul
+   numero chiamato dal master. I corpi sono in unità di contenitore (cqw),
+   quindi il testo si riscala da solo alle due misure senza duplicare regole. */
+
+.porta-biglietto,
+.blocco-biglietto {
+  container-type: inline-size;
+}
+
+.porta-biglietto {
+  width: min(13.5rem, 64%);
+  margin: .3rem auto 1.5rem;
+}
+
+.biglietto {
+  width: 100%;
+  aspect-ratio: 1 / 1.919;
+  /* le percentuali seguono la sagoma: l'intaglio chiude al 34.3% e le spalle
+     stanno al 65.6%, quindi il testo vive esattamente in mezzo */
+  padding: 65.8% 12% 66%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.6rem;
-  margin: 1.4rem 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--sagoma) center / contain no-repeat;
+  text-align: center;
+}
+
+.biglietto[data-colore="verde"] {
+  --sagoma: url(img/biglietto-verde.svg);
+  --banda: #2f9e2a;
+}
+
+.biglietto[data-colore="giallo"] {
+  --sagoma: url(img/biglietto-giallo.svg);
+  --banda: #e2a505;
+}
+
+.biglietto[data-colore="rosso"] {
+  --sagoma: url(img/biglietto-rosso.svg);
+  --banda: #cf1f26;
+}
+
+.biglietto[data-colore="blu"] {
+  --sagoma: url(img/biglietto-blu.svg);
+  --banda: #1f5cba;
+}
+
+/* Il nome della coda, stampato sul biglietto sopra il numero. Due righe al
+   massimo: un nome lungo non deve sfondare la sagoma. */
+.nome-coda {
+  font-size: 6.2cqw;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--banda);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.biglietto .numerone {
+  margin-top: .08em;
+  font-size: 26cqw;
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: #26272a; /* il numero resta scuro: colorati sono nome, bande, freccia */
+}
+
+.etichetta-stato {
+  margin: 0 0 .2rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+/* --- dati ------------------------------------------------------------- */
+
+.riga-dati {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+  margin: 1.5rem 0;
   padding-top: 1.2rem;
   border-top: 1px solid var(--linea);
 }
 
-.dato { min-width: 6.5rem; }
-
 .dato b {
   display: block;
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 600;
   letter-spacing: -.02em;
-  line-height: 1.2;
+  line-height: 1.15;
+}
+
+.dato .tenue { font-size: .9rem; line-height: 1.25; display: block; }
+
+@media (max-width: 24rem) {
+  .riga-dati { gap: .4rem; }
+  .dato b { font-size: 1.4rem; }
+  .dato .tenue { font-size: .82rem; }
+}
+
+/* --- il tabellone del master ------------------------------------------ */
+/* Il numero chiamato sta nella stessa sagoma del biglietto di chi aspetta:
+   così il colore, che è la cifra alta, si confronta a vista. Accanto il QR,
+   perché chi arriva li deve leggere entrambi in un colpo d'occhio. */
+
+#pannello { display: contents; }
+
+.tabellone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+.blocco-biglietto { flex: 0 0 44%; max-width: 12rem; }
+.blocco-biglietto .didascalia { margin: .1rem 0 0; text-align: center; font-size: .9rem; }
+
+.qr-blocco { flex: 0 1 clamp(8rem, 40%, 11rem); text-align: center; }
+
+#qr { line-height: 0; }
+
+#qr img {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  background: #fff;      /* il QR va letto anche in tema scuro */
+  padding: 6px;
+  border-radius: 2px;
+}
+
+.qr-blocco .tenue { margin: .5rem 0 0; font-size: .82rem; line-height: 1.3; }
+
+@media (max-width: 21rem) {
+  .tabellone { flex-direction: column; }
+  .blocco-biglietto, .qr-blocco { flex: none; width: 68%; }
 }
 
 /* --- controlli -------------------------------------------------------- */
@@ -121,6 +272,7 @@ button {
   border-radius: var(--raggio);
   cursor: pointer;
   transition: background-color .12s, border-color .12s, opacity .12s;
+  touch-action: manipulation;
 }
 
 button:focus-visible,
@@ -133,51 +285,55 @@ a:focus-visible {
 .principale {
   display: block;
   width: 100%;
-  padding: 1.15rem 1rem;
+  min-height: 3.6rem;
+  padding: 1.05rem 1rem;
   border: 0;
   background: var(--inchiostro);
   color: var(--carta);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 600;
 }
 
 .principale:hover:not(:disabled) { opacity: .86; }
+.principale:active:not(:disabled) { opacity: .7; }
 
 .secondario {
-  padding: .7rem 1rem;
+  min-height: 3rem;
+  padding: .75rem 1rem;
   border: 1px solid var(--linea);
   background: transparent;
   color: var(--inchiostro);
-  font-size: .9rem;
+  font-size: 1rem;
 }
 
 .secondario:hover:not(:disabled) { border-color: var(--inchiostro); }
-
-button:disabled { opacity: .4; cursor: not-allowed; }
+button:disabled { opacity: .38; cursor: not-allowed; }
 
 .fila {
   display: flex;
   flex-wrap: wrap;
-  gap: .55rem;
-  margin-top: .9rem;
+  gap: .6rem;
+  margin-top: .8rem;
 }
 
-.fila button { flex: 1 1 8.5rem; }
+.fila button { flex: 1 1 9rem; }
 
-input[type="text"], input[type="number"] {
+input[type="text"] {
   width: 100%;
-  padding: .8rem .85rem;
+  min-height: 3.4rem;
+  padding: .85rem;
   border: 1px solid var(--linea);
   border-radius: var(--raggio);
   background: var(--carta-alta);
   color: inherit;
   font: inherit;
+  font-size: 1.15rem; /* sotto 16px iOS ingrandisce la pagina al focus */
 }
 
 label {
   display: block;
-  margin-bottom: .4rem;
-  font-size: .9rem;
+  margin-bottom: .45rem;
+  font-size: 1rem;
   color: var(--tenue);
 }
 
@@ -194,33 +350,36 @@ label {
 .avvertenza {
   border-left: 3px solid var(--ambra);
   border-radius: 0;
-  padding-left: .95rem;
+  padding-left: 1rem;
 }
 
 .codice {
   display: block;
-  margin: .5rem 0;
-  padding: .7rem .8rem;
+  margin: .6rem 0;
+  padding: .75rem;
   border: 1px solid var(--linea);
   border-radius: var(--raggio);
   background: var(--carta);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: .82rem;
+  font-size: .85rem;
   word-break: break-all;
 }
-
-#qr { margin: 1rem 0; line-height: 0; }
-#qr img { width: 100%; max-width: 15rem; height: auto; image-rendering: pixelated; }
 
 /* --- stati ------------------------------------------------------------ */
 
 .nascosto { display: none !important; }
 
-.stato { display: flex; align-items: center; gap: .5rem; font-size: .875rem; }
+.stato {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .95rem;
+  color: var(--tenue);
+}
 
 .spia {
-  width: .5rem;
-  height: .5rem;
+  width: .55rem;
+  height: .55rem;
   border-radius: 50%;
   background: var(--pronto);
   flex: none;
@@ -229,44 +388,78 @@ label {
 .offline .spia { background: var(--ambra); }
 .offline .stato { color: var(--ambra); }
 
-.vicino .numerone { color: var(--ambra); }
+.vicino .etichetta-stato { color: var(--ambra); }
 
-/* Il momento in cui la pagina alza la voce. È l'unico. */
+/* Il momento in cui la pagina alza la voce. È l'unico.
+   Il biglietto non cambia colore: resta carta su rosso. */
 body.turno {
   --carta: var(--segnale);
-  --carta-alta: rgba(255, 255, 255, .12);
+  --carta-alta: rgba(255, 255, 255, .14);
   --inchiostro: #fff;
-  --tenue: rgba(255, 255, 255, .82);
-  --linea: rgba(255, 255, 255, .35);
+  --tenue: rgba(255, 255, 255, .85);
+  --linea: rgba(255, 255, 255, .38);
 }
+
+body.turno .biglietto { transform: scale(1.05); }
 
 body.turno .principale { background: #fff; color: var(--segnale); }
 
 @media (prefers-reduced-motion: no-preference) {
-  body.turno .numerone { animation: battito 1.1s ease-in-out 4; }
+  body.turno .biglietto { animation: battito 1.15s ease-in-out 4; }
 }
 
 @keyframes battito {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .45; }
+  0%, 100% { transform: scale(1.05); }
+  50% { transform: scale(.97); }
 }
 
-.passato .numerone { color: var(--tenue); }
+.passato .biglietto { opacity: .5; }
 
-.errore { color: var(--segnale); font-size: .9rem; margin: .7rem 0 0; }
+.errore { color: var(--segnale); font-size: 1rem; margin: .8rem 0 0; }
 
 footer {
-  margin-top: 3rem;
-  padding-top: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1.1rem;
   border-top: 1px solid var(--linea);
-  font-size: .8rem;
+  font-size: .95rem;
   color: var(--tenue);
 }
 
 footer a { color: inherit; }
 
+/* --- schermi larghi --------------------------------------------------- */
+/* Il master su un portatile al banco: tabellone a sinistra, comandi a
+   destra, così il numero e il QR restano fermi mentre si opera. */
+
+@media (min-width: 52rem) {
+  body { padding: 2rem; }
+  main { max-width: 30rem; }
+
+  main.largo {
+    max-width: 54rem;
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  main.largo .tabellone {
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  main.largo .blocco-biglietto { flex: none; width: 100%; max-width: 15rem; }
+
+  main.largo .qr-blocco { flex: none; width: 100%; max-width: 15rem; }
+  main.largo .riga-dati { margin-top: 0; }
+}
+
 @media print {
   body { background: #fff; color: #000; padding: 0; }
   .no-stampa { display: none !important; }
-  #qr img { max-width: 11cm; }
+  .tabellone { display: block; border: 0; }
+  .qr-blocco { width: 100%; }
+  #qr img { max-width: 11cm; padding: 0; }
 }

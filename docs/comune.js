@@ -1,6 +1,6 @@
 // Modulo condiviso dalle tre pagine.
 // L'unica riga da cambiare al deploy è questa:
-const API = "https://mortincoda.petrus-giannini.deno.net";
+const API = "https://mortincoda.petrus-giannini.deno.net/";
 // const API = "http://localhost:8000";
 
 // --- client HTTP -------------------------------------------------------
@@ -75,6 +75,24 @@ export function formattaAttesa(ms) {
   if (min < 10) return `circa ${Math.round(min)} minuti`;
   if (min < 90) return `circa ${Math.round(min / 5) * 5} minuti`;
   return "più di un'ora e mezza";
+}
+
+/* --- numerazione del rotolo ---------------------------------------------
+   Il contatore sul server resta un progressivo infinito (1, 2, ... 250): è
+   quello che decide chi viene prima di chi, e non va mai toccato.
+   Quello che si legge sul biglietto è invece la coppia (due cifre, colore),
+   esattamente come su un rotolo vero. Il colore è la cifra alta: senza,
+   il 23 verde e il 123 giallo sarebbero lo stesso biglietto. */
+
+export const COLORI = ["verde", "giallo", "rosso", "blu"];
+
+/** 1 -> "01", 99 -> "99", 100 -> "00" (e cambia colore), 250 -> "50". */
+export function cifre(n) {
+  return String(n % 100).padStart(2, "0");
+}
+
+export function colore(n) {
+  return COLORI[Math.floor(n / 100) % COLORI.length];
 }
 
 export function plurale(n, uno, molti) {

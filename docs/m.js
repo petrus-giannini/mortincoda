@@ -1,6 +1,8 @@
 import {
   api,
   avviaPolling,
+  cifre,
+  colore,
   disegnaQr,
   formattaAttesa,
   parametro,
@@ -40,8 +42,11 @@ const togliCaricamento = () => { if (caricamento.isConnected) caricamento.remove
 function mostra(s) {
   ultimo = s;
   $("insegna").textContent = s.nome;
-  document.title = `${s.cur || "—"} · ${s.nome}`;
-  $("corrente").textContent = s.cur || "—";
+  document.title = `${s.cur ? cifre(s.cur) : "—"} · ${s.nome}`;
+  $("corrente").textContent = s.cur ? cifre(s.cur) : "—";
+  // Stessa sagoma e stesso colore del biglietto di chi aspetta: il colore è
+  // la cifra alta, e senza il 23 e il 123 sarebbero indistinguibili in sala.
+  $("biglietto").dataset.colore = colore(s.cur);
   $("attesa").textContent = Math.max(0, s.last - s.cur);
   $("emessi").textContent = s.last;
   $("media").textContent = s.srv >= 3
@@ -50,14 +55,17 @@ function mostra(s) {
 
   const vuota = s.cur >= s.last;
   $("prossimo").disabled = vuota;
-  $("prossimo").textContent = vuota ? "Nessuno in attesa" : `Chiama il ${s.cur + 1}`;
+  $("prossimo").textContent = vuota
+    ? "Nessuno in attesa"
+    : `Chiama il ${cifre(s.cur + 1)}`;
   $("richiama").disabled = s.cur === 0;
   $("indietro").disabled = s.cur === 0;
   $("chiudi").disabled = false;
   $("chiudi").textContent = s.open ? "Chiudi le prenotazioni" : "Riapri le prenotazioni";
+  // Sta sotto il QR, in uno spazio stretto: due righe al massimo.
   $("didascalia").textContent = s.open
-    ? `Inquadra il codice per metterti in coda a «${s.nome}».`
-    : "Le prenotazioni sono chiuse: chi inquadra il codice non può staccare il numero.";
+    ? "Inquadra per metterti in coda"
+    : "Prenotazioni chiuse";
 }
 
 function scomparsa() {
@@ -109,7 +117,17 @@ $("chiudi").addEventListener("click", (e) =>
 // --- QR e link ---------------------------------------------------------
 
 disegnaQr($("qr"), link);
-$("linkMaster").textContent = `${location.origin}${location.pathname}?c=${codice}#${token}`;
+
+const linkRiservato = `${location.origin}${location.pathname}?c=${codice}#${token}`;
+$("linkMaster").textContent = linkRiservato;
+
+// Il link riservato contiene il token e resta coperto finché non lo si chiede.
+// Questa pagina è pensata per stare girata verso i clienti: un token in
+// chiaro sullo schermo è una password scritta su un cartello.
+$("scopri").addEventListener("click", (e) => {
+  const nascosto = $("linkMaster").classList.toggle("nascosto");
+  e.currentTarget.textContent = nascosto ? "Mostra" : "Nascondi";
+});
 
 async function copia(testo, bottone, etichetta) {
   try {
@@ -122,9 +140,9 @@ async function copia(testo, bottone, etichetta) {
 }
 
 $("copia").addEventListener("click", (e) =>
-  copia(link, e.currentTarget, "Copia il link"));
+  copia(link, e.currentTarget, "Copia il link della coda"));
 $("copiaMaster").addEventListener("click", (e) =>
-  copia($("linkMaster").textContent, e.currentTarget, "Copia il link riservato"));
+  copia(linkRiservato, e.currentTarget, "Copia il link riservato"));
 $("stampa").addEventListener("click", () => print());
 
 // --- polling -----------------------------------------------------------

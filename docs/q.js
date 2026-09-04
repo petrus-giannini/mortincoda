@@ -3,6 +3,8 @@ import {
   api,
   attivaAvvisi,
   avviaPolling,
+  cifre,
+  colore,
   dimentica,
   formattaAttesa,
   notifica,
@@ -54,7 +56,7 @@ function mostra(s) {
     $("stacca").disabled = !s.open;
     $("stacca").textContent = s.open ? "Stacca il numero" : "Prenotazioni chiuse";
     $("situazione").textContent = s.open
-      ? (s.cur ? `Ora è servito il numero ${s.cur}. ` : "") +
+      ? (s.cur ? `Ora è servito il numero ${cifre(s.cur)}. ` : "") +
         `${plurale(Math.max(0, s.last - s.cur), "persona in attesa", "persone in attesa")}.`
       : "Chi gestisce lo sportello ha chiuso le prenotazioni.";
     return;
@@ -65,8 +67,9 @@ function mostra(s) {
   const davanti = Math.max(0, t - 1);
   const ms = stimaMs(s);
 
-  $("mio").textContent = mio;
-  $("servito").textContent = s.cur || "—";
+  $("mio").textContent = cifre(mio);
+  $("biglietto").dataset.colore = colore(mio);
+  $("servito").textContent = s.cur ? cifre(s.cur) : "—";
   $("davanti").textContent = t > 0 ? davanti : "—";
   $("stima").textContent = t > 0 ? (ms === null ? "—" : formattaAttesa(ms)) : "—";
 
@@ -77,22 +80,22 @@ function mostra(s) {
   if (t === 0) {
     $("etichettaNumero").textContent = "Tocca a te";
     $("messaggio").textContent = "Presentati allo sportello.";
-    document.title = `▶ Tocca a te — ${mio}`;
+    document.title = `▶ Tocca a te — ${cifre(mio)}`;
   } else if (t < 0) {
-    $("etichettaNumero").textContent = "Il tuo turno è passato";
+    $("etichettaNumero").textContent = "Turno passato";
     $("messaggio").textContent =
-      `Ora è servito il numero ${s.cur}. Rivolgiti allo sportello: il tuo numero può essere richiamato.`;
-    document.title = `Turno passato — ${mio}`;
+      `Ora è servito il numero ${cifre(s.cur)}. Rivolgiti allo sportello: il tuo numero può essere richiamato.`;
+    document.title = `Turno passato — ${cifre(mio)}`;
   } else if (t === 1) {
-    $("etichettaNumero").textContent = "Il tuo numero";
-    $("messaggio").textContent = "Sei il prossimo. Avvicinati allo sportello.";
-    document.title = `(1) ${mio} — sei il prossimo`;
+    $("etichettaNumero").textContent = "Sei il prossimo";
+    $("messaggio").textContent = "Avvicinati allo sportello.";
+    document.title = `(1) ${cifre(mio)} — sei il prossimo`;
   } else {
     $("etichettaNumero").textContent = "Il tuo numero";
     $("messaggio").textContent = davanti === 0
       ? "In attesa."
       : `${plurale(davanti, "persona prima", "persone prima")} di te.`;
-    document.title = `(${davanti}) ${mio} — in coda`;
+    document.title = `(${davanti}) ${cifre(mio)} — in coda`;
   }
 
   $("promemoria").classList.toggle("nascosto", t <= 0);
@@ -118,7 +121,7 @@ function avvisa(s, t) {
     if (giaAvvisato !== chiave) {
       giaAvvisato = chiave;
       suona(true);
-      notifica("Tocca a te", `${s.nome} — numero ${mio}`);
+      notifica("Tocca a te", `${s.nome} — numero ${cifre(mio)} ${colore(mio)}`);
     }
     preavvisato = false;
     return;

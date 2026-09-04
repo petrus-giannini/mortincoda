@@ -2,10 +2,13 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>In coda</title>
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,11 +26,18 @@
 
   <!-- 2. è in coda -->
   <div id="attesa" class="nascosto">
-    <span class="insegna" id="insegna2"></span>
 
-    <span class="etichetta" id="etichettaNumero">Il tuo numero</span>
-    <span class="numerone" id="mio">—</span>
-    <p id="messaggio" style="font-size:1.1rem;margin-top:.6rem"></p>
+    <!-- La sagoma è uno sfondo SVG; nome della coda e numero sono testo,
+         così cambiano a ogni turno. Il colore ruota ogni cento numeri. -->
+    <div class="porta-biglietto">
+      <div class="biglietto" id="biglietto" data-colore="verde">
+        <span class="nome-coda" id="insegna2"></span>
+        <span class="numerone" id="mio">—</span>
+      </div>
+    </div>
+
+    <p class="etichetta-stato" id="etichettaNumero">Il tuo numero</p>
+    <p class="messaggio" id="messaggio"></p>
 
     <div class="riga-dati">
       <span class="dato"><b id="servito">—</b><span class="tenue">chiamato ora</span></span>
@@ -40,8 +50,8 @@
     <div class="riquadro avvertenza" id="promemoria">
       <p style="margin:0"><b>Tieni aperta questa pagina.</b> Se la chiudi non
       ricevi l'avviso del tuo turno.</p>
-      <p class="tenue" style="margin:.45rem 0 0">Il numero resta valido, ma
-      dovrai controllare da solo a che punto è la coda.</p>
+      <p class="tenue minuta" style="margin:.5rem 0 0">Il numero resta valido,
+      ma dovrai controllare da solo a che punto è la coda.</p>
     </div>
 
     <div class="stato" style="margin-top:1.2rem">

@@ -2,27 +2,41 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Gestione coda</title>
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="light dark">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
+<main class="largo">
   <div id="caricamento" class="tenue">Apertura della coda…</div>
 
   <div id="pannello" class="nascosto">
-    <span class="insegna no-stampa" id="insegna"></span>
 
-    <div class="no-stampa">
-      <span class="etichetta">In servizio</span>
-      <span class="numerone" id="corrente">—</span>
+    <!-- Quello che guardano i clienti: numero chiamato e QR affiancati. -->
+    <section class="tabellone">
+      <div class="blocco-biglietto">
+        <div class="biglietto" id="biglietto" data-colore="verde">
+          <span class="nome-coda" id="insegna"></span>
+          <span class="numerone" id="corrente">—</span>
+        </div>
+        <p class="tenue didascalia">In servizio</p>
+      </div>
+      <div class="qr-blocco">
+        <div id="qr"></div>
+        <p class="tenue" id="didascalia"></p>
+      </div>
+    </section>
 
-      <div class="riga-dati">
+    <section class="comandi no-stampa">
+      <div class="riga-dati" style="border-top:0;padding-top:0;margin-top:0">
         <span class="dato"><b id="attesa">0</b><span class="tenue">in attesa</span></span>
-        <span class="dato"><b id="emessi">0</b><span class="tenue">numeri staccati</span></span>
-        <span class="dato"><b id="media">—</b><span class="tenue">per persona</span></span>
+        <span class="dato"><b id="emessi">0</b><span class="tenue">staccati</span></span>
+        <span class="dato"><b id="media">—</b><span class="tenue">a persona</span></span>
       </div>
 
       <button class="principale" id="prossimo">Chiama il prossimo</button>
@@ -36,27 +50,31 @@
       <div class="stato" style="margin-top:1.1rem">
         <span class="spia"></span><span id="rete">Collegato</span>
       </div>
-    </div>
 
-    <h2 class="no-stampa">Da mostrare a chi arriva</h2>
-    <div id="qr"></div>
-    <p class="tenue" id="didascalia"></p>
+      <div class="fila">
+        <button class="secondario" id="copia">Copia il link della coda</button>
+        <button class="secondario" id="stampa">Stampa il QR</button>
+      </div>
 
-    <div class="fila no-stampa">
-      <button class="secondario" id="copia">Copia il link</button>
-      <button class="secondario" id="stampa">Stampa il QR</button>
-    </div>
+      <!-- Il token resta coperto: se lo schermo è girato verso i clienti,
+           chiunque potrebbe fotografarlo e prendere il controllo della coda. -->
+      <div class="riquadro avvertenza">
+        <p style="margin:0"><b>Conserva il link riservato.</b> È l'unico modo
+        per tornare a gestire la coda da un altro dispositivo, e non è
+        recuperabile.</p>
+        <p class="tenue minuta" style="margin:.5rem 0 .8rem">Contiene la
+        password della coda: non mostrarlo se lo schermo è rivolto al pubblico.</p>
+        <div class="fila" style="margin-top:0">
+          <button class="secondario" id="copiaMaster">Copia il link riservato</button>
+          <button class="secondario" id="scopri">Mostra</button>
+        </div>
+        <code class="codice nascosto" id="linkMaster"></code>
+      </div>
 
-    <div class="riquadro avvertenza no-stampa">
-      <p style="margin:0"><b>Conserva questo link.</b> È l'unico modo per tornare
-      a gestire la coda da un altro dispositivo, e non è recuperabile.</p>
-      <code class="codice" id="linkMaster"></code>
-      <button class="secondario" id="copiaMaster">Copia il link riservato</button>
-    </div>
-
-    <footer class="no-stampa">
-      La coda si cancella da sola 24 ore dopo l'ultima attività.
-    </footer>
+      <footer>
+        La coda si cancella da sola 24 ore dopo l'ultima attività.
+      </footer>
+    </section>
   </div>
 
   <div id="assente" class="nascosto">
